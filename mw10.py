@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from mw10 import galaxy
+from mw10 import game
+from mw10 import display
 
 def main():
-    home = galaxy.Galaxy()
-    print home
-    print home.get_current_view()
+    text_display = display.TextDisplay()
+    g = game.Game(text_display)
 
 if __name__ == '__main__':
     main()
