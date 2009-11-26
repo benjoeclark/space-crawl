@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import actions
+import commands
 import os
 
 class TextDisplay:
