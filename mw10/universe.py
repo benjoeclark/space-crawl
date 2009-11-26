@@ -8,6 +8,8 @@ class Universe:
     (it's a big job)"""
     def __init__(self):
         """Initalize a new universe"""
+        self.width = 10
+        self.height = 10
         self.possible_galaxy_names = ['Andromeda',
                 'Spam',
                 'Foo',
@@ -25,7 +27,8 @@ class Universe:
                 'F5']
         self.galaxies = []
         for index in range(random.randint(5, 15)):
-            self.galaxies.append(galaxy.Galaxy(self.new_name()))
+            self.galaxies.append(galaxy.Galaxy(self.get_galaxy_position(),
+                self.new_name()))
     
     def new_name(self):
         """Get a random galaxy name"""
@@ -37,3 +40,9 @@ class Universe:
         for g in self.galaxies:
             names.append(g.get_name())
         return names
+
+    def get_galaxy_position(self):
+        """Get a random galaxy position"""
+        x = random.randint(-self.width/2, self.width/2)
+        y = random.randint(-self.height/2, self.height/2)
+        return x, y
