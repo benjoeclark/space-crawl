@@ -6,12 +6,12 @@ import star
 class Galaxy:
     """Class to handle keeping up with galaxy elements, including random
     initialization of a galaxy"""
-    def __init__(self):
+    def __init__(self, name='Milky Way 10'):
         """Initialize a galaxy"""
         self.width = 20
         self.height = 20
         self.star = star.Star(self.get_random_location())
-        self.name = 'Milky Way 10'
+        self.name = name
 
     def __repr__(self):
         """String representation of the galazy"""
@@ -39,3 +39,7 @@ class Galaxy:
         current_view += horizontal_border
         current_view += '\n' + str(self.star.get_location())
         return current_view
+
+    def get_name(self):
+        """Return the galaxy name"""
+        return self.name
