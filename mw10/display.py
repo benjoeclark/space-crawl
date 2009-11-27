@@ -2,6 +2,7 @@
 
 import commands
 import galaxy
+import body
 import os
 
 class TextDisplay:
@@ -26,6 +27,9 @@ class TextDisplay:
 
     def draw(self):
         """Draw the current view state"""
+        # Note that when drawing sprites, the y positions are flipped since
+        # indexing of the sprites starts from the top and goes down while
+        # a normal y-axis starts from the bottom and goes up
         self.screen = self.fill_screen()
         x, y = self.width/2, self.height/2
         line_number = 0
@@ -35,7 +39,10 @@ class TextDisplay:
                 line_number += 1
             elif isinstance(item, galaxy.Galaxy):
                 self.insert_symbol(item.symbol, x+item.position[0],
-                        y+item.position[1])
+                        y-item.position[1])
+            elif isinstance(item, body.Body):
+                self.insert_symbol(item.symbol, x+item.position[0],
+                        y-item.position[1])
         self.clear()
         print self.screen
 

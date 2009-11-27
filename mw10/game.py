@@ -1,7 +1,7 @@
 import universe
 import player
 import display
-from subgames import galaxyselection
+from subgames import galaxyselection, dock, flight
 
 class Game:
     """The game class to handle the background actions for playing mw10"""
@@ -24,6 +24,13 @@ class Game:
         """Select the appropriate subgame to play"""
         if self.player.current_galaxy == None:
             return galaxyselection.GalaxySelection(self)
+        elif self.player.docked:
+            return dock.Dock(self)
+        elif len(self.player.bodies_in_view) > 0:
+            return flight.Flight(self)
+        else:
+            print 'nowhere to go'
+            self.game_running = False
 
     def start(self):
         """Start a new game"""
@@ -56,7 +63,7 @@ class Game:
         """Display a game over sign"""
         self.game_running = False
         buffer = ['Goodbye for now']
-        return buffer
+        self.display.set_sprites(buffer)
 
     def get_state(self):
         """Get the current state"""

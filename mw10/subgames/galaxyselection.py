@@ -12,11 +12,22 @@ class GalaxySelection(subgame.Subgame):
         """Handle the user command"""
         if command == 'select':
             self.set_galaxy()
+            self.subgame_running = False
         elif self.is_selection(command):
             self.selection = int(command) - 1
             self.show_selection()
         else:
             self.show_selection()
+
+    def show_help(self):
+        """Show the help menu"""
+        self.game.display.set_sprites(['Help for galaxy selection:',
+            '    command        description',
+            '    -------        -----------',
+            '    select         select the galaxy to start with',
+            '    <number>       select the numbered galaxy',
+            '    <ENTER>        return to the selection screen',
+            '    quit           exit the game'])
 
     def show_selection(self):
         """Show the current selection"""
@@ -26,15 +37,6 @@ class GalaxySelection(subgame.Subgame):
         buffer.extend(self.mark_selection())
         buffer.extend(self.game.universe.galaxies)
         self.game.display.set_sprites(buffer)
-
-    def show_help(self):
-        """Show the help menu"""
-        self.game.display.set_sprites(['Help for galaxy selection:',
-            '    command        description',
-            '    -------        -----------',
-            '    select         select the galaxy to start with',
-            '    <ENTER>        return to the selection screen',
-            '    quit           exit the game'])
 
     def get_title(self):
         """Game startup introduction"""
