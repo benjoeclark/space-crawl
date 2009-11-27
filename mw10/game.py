@@ -1,7 +1,7 @@
 import universe
 import player
 import display
-import subgames
+from subgames import galaxyselection
 
 class Game:
     """The game class to handle the background actions for playing mw10"""
@@ -23,7 +23,7 @@ class Game:
     def select_subgame(self):
         """Select the appropriate subgame to play"""
         if self.player.current_galaxy == None:
-            return subgames.GalaxySelection(self)
+            return galaxyselection.GalaxySelection(self)
 
     def start(self):
         """Start a new game"""

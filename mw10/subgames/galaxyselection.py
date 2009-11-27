@@ -1,26 +1,6 @@
-class Subgame:
-    """Superclass for all subgames"""
-    def __init__(self, game):
-        """Initialize the subgame"""
-        self.game = game
-        self.initialize()
-        self.game.display.draw()
-        self.run()
+import subgame
 
-    def run(self):
-        """Run the subgame"""
-        while self.game.game_running:
-            command = self.game.display.get_user_input()
-            if command == 'quit':
-                self.game.game_over()
-            elif command == 'help':
-                self.show_help()
-            else:
-                self.handle_command(command)
-            self.game.display.draw()
-
-
-class GalaxySelection(Subgame):
+class GalaxySelection(subgame.Subgame):
     """The Subgame that handles selecting the starting galaxy"""
     def initialize(self):
         """Initialize the galaxy selection"""
@@ -78,7 +58,7 @@ class GalaxySelection(Subgame):
         """Check that the command is a valid galaxy selection"""
         try:
             self.game.universe.galaxies[int(command)-1]
-        except ValueError, IndexError:
+        except (ValueError, IndexError):
             return False
         return True
 
