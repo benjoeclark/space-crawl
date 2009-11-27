@@ -22,7 +22,7 @@ class Galaxy:
 
     def __repr__(self):
         """String representation of the galazy"""
-        return 'galaxy ' + self.name + ' contains ' + self.star.__repr__()
+        return 'galaxy ' + self.name
 
     def generate_position(self):
         """Get a random position in the galaxy"""
