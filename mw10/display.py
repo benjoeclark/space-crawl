@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import commands
 import galaxy
 import body
 import os

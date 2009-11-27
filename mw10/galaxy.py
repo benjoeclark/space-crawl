@@ -4,7 +4,6 @@ import random
 import math
 import body
 import station
-import star
 
 class Galaxy:
     """Class to handle keeping up with galaxy elements, including random
@@ -20,7 +19,6 @@ class Galaxy:
             self.name + ' Station')]
         for index in range(random.randint(5, 10)):
             self.bodies.append(body.Body(self.generate_position(), str(index)))
-        self.star = star.Star(self.get_random_location())
 
     def __repr__(self):
         """String representation of the galazy"""
@@ -31,29 +29,6 @@ class Galaxy:
         x = random.randint(-self.width/2, self.width/2)
         y = random.randint(-self.height/2, self.height/2)
         return x, y
-
-    def get_random_location(self):
-        """Get a random location tuple"""
-        return (random.randint(0, self.width-1),
-                random.randint(0, self.height-1))
-
-    def get_current_view(self):
-        """Returns a string representing the location of items in the
-        galaxy"""
-        horizontal_border = '|' + '-'*(self.width+2) + '|'
-        current_view = horizontal_border + '\n'
-        for row in range(self.height):
-            current_view += '|'
-            if self.star.get_location()[1] == row:
-                current_view += ' '*(self.star.get_location()[0])
-                current_view += '*'
-                current_view += ' '*(self.width+1-self.star.get_location()[0])
-            else:
-                current_view += ' '*(self.width+2)
-            current_view += '|\n'
-        current_view += horizontal_border
-        current_view += '\n' + str(self.star.get_location())
-        return current_view
 
     def get_name(self):
         """Return the galaxy name"""
