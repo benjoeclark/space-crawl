@@ -1,19 +1,29 @@
-#!/usr/bin/env python
-
 import universe
 import player
 import display
+import subgames
 
 class Game:
     """The game class to handle the background actions for playing mw10"""
     def __init__(self, display_type):
         """Initialize a game"""
         self.game_running = True
-        self.state = 'select'
         self.universe = universe.Universe()
         self.player = player.Player()
         self.display = display.TextDisplay()
-        self.start()
+        self.display.set_prompt(self.get_prompt())
+        self.run()
+
+    def run(self):
+        """Run the game, selecting the appropriate subgame to pass off
+        focus to"""
+        while self.game_running:
+            self.select_subgame()
+
+    def select_subgame(self):
+        """Select the appropriate subgame to play"""
+        if self.player.current_galaxy == None:
+            return subgames.GalaxySelection(self)
 
     def start(self):
         """Start a new game"""
@@ -23,21 +33,6 @@ class Game:
         self.display.set_sprites(sprites)
         self.display.draw()
         self.run()
-
-    def get_introduction(self):
-        """Game startup introduction"""
-        introduction = ['You have been chosen as captain of a colony',
-                'sent to Milky Way 10',
-                'Select a starting galaxy:']
-        introduction.extend(self.universe.get_galaxy_names())
-        return introduction
-
-    def run(self):
-        """Run the game (main loop)"""
-        while self.game_running:
-            command = self.display.get_user_input()
-            self.handle_command(command)
-            self.display.draw()
 
     def handle_command(self, command):
         """Handle the user command"""
@@ -59,6 +54,7 @@ class Game:
     
     def game_over(self):
         """Display a game over sign"""
+        self.game_running = False
         buffer = ['Goodbye for now']
         return buffer
 

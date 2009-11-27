@@ -13,7 +13,7 @@ class Galaxy:
         self.star = star.Star(self.get_random_location())
         self.position = position
         self.name = name
-        self.symbol = '*'
+        self.symbol = 'o'
 
     def __repr__(self):
         """String representation of the galazy"""
@@ -45,3 +45,7 @@ class Galaxy:
     def get_name(self):
         """Return the galaxy name"""
         return self.name
+
+    def set_symbol(self, symbol):
+        """Set the galaxy's map symbol"""
+        self.symbol = symbol

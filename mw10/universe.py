@@ -46,3 +46,8 @@ class Universe:
         x = random.randint(-self.width/2, self.width/2)
         y = random.randint(-self.height/2, self.height/2)
         return x, y
+
+    def set_symbols(self, symbol):
+        """Set all galaxies to the symbol"""
+        for galaxy in self.galaxies:
+            galaxy.set_symbol(symbol)

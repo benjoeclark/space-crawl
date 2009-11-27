@@ -62,14 +62,6 @@ class TextDisplay:
                 output.append(' '*self.width)
         return '\n'.join(output)
 
-    def start(self, introduction):
-        """Show the introduction to start the game"""
-        print introduction
-
-    def inform(self, message):
-        """Inform the user of the message"""
-        print message
-
     def get_user_input(self):
         """Wait for the user input, and return an action based on it"""
         command = raw_input(self.prompt)
