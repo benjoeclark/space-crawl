@@ -1,3 +1,5 @@
+import ship
+
 class Player:
     """Class to keep track of the player"""
     def __init__(self):
@@ -7,6 +9,8 @@ class Player:
         self.orbiting = False
         self.bodies_in_view = []
         self.position = None
+        self.ship = ship.Pod()
+        self.contents = []
 
     def enter_galaxy(self, galaxy):
         """Put the player in the galaxy"""
@@ -29,3 +33,7 @@ class Player:
         print self.position
         self.bodies_in_view = \
                 self.current_galaxy.get_bodies_in_view(self.position)
+
+    def get_from_planet(self, planet):
+        """Get the contents from the planet"""
+        self.contents.append(planet.pop())

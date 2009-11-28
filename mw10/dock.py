@@ -23,7 +23,8 @@ class Dock(subgame.Subgame):
     def show_dock(self):
         """Show the dock"""
         self.game.display.set_sprites(['Welcome to the dock',
-            'To leave the dock in your craft, enter launch'])
+            'To leave the dock in your craft, enter launch',
+            self.game.player.ship])
 
     def launch(self):
         """Leave the dock"""

@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-
 import galaxy
 import body
 import os
+import ship
 
 class TextDisplay:
     """Display for playing MW10 in a console"""
@@ -42,6 +41,8 @@ class TextDisplay:
             elif isinstance(item, body.Body):
                 self.insert_symbol(item.symbol, x+item.position[0],
                         y-item.position[1])
+            elif isinstance(item, ship.Ship):
+                self.insert_image(item.image)
         self.clear()
         print self.screen
 
@@ -55,6 +56,14 @@ class TextDisplay:
         """Insert the symbol at the given position"""
         lines = self.screen.splitlines()
         lines[y] = lines[y][:x] + symbol + lines[y][x+1:]
+        self.screen = '\n'.join(lines)
+
+    def insert_image(self, image):
+        """Insert the image in the screen"""
+        lines = self.screen.splitlines()
+        x, y = self.width/2, self.height/2
+        for i, line in enumerate(image):
+            lines[i+y] = lines[i+y][:x] + line + lines[i+y][x-len(line):]
         self.screen = '\n'.join(lines)
 
     def fill_screen(self, buffer=[]):
