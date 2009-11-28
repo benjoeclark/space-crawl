@@ -1,7 +1,10 @@
 import universe
 import player
 import display
-from subgames import galaxyselection, dock, flight
+import galaxyselection
+import dock
+import orbit
+import flight
 
 class Game:
     """The game class to handle the background actions for playing mw10"""
@@ -26,6 +29,8 @@ class Game:
             return galaxyselection.GalaxySelection(self)
         elif self.player.docked:
             return dock.Dock(self)
+        elif self.player.orbiting:
+            return orbit.Orbit(self)
         elif len(self.player.bodies_in_view) > 0:
             return flight.Flight(self)
         else:

@@ -1,4 +1,6 @@
 import subgame
+import station
+import planet
 
 class Flight(subgame.Subgame):
     """Flight subgame for moving around the galaxy"""
@@ -39,10 +41,19 @@ class Flight(subgame.Subgame):
         """Detect when the player moves over a body"""
         for body in self.game.player.current_galaxy.bodies:
             if self.game.player.position == body.position:
-                self.dock(body)
+                if isinstance(body, station.Station):
+                    self.dock(body)
+                elif isinstance(body, planet.Planet):
+                    self.orbit(body)
 
     def dock(self, body):
-        """Dock with the detected body"""
+        """Dock with the detected station"""
         self.game.player.docked = True
+        self.game.player.bodies_in_view = []
+        self.subgame_running = False
+
+    def orbit(self, body):
+        """Orbit the detected planet"""
+        self.game.player.orbiting = True
         self.game.player.bodies_in_view = []
         self.subgame_running = False

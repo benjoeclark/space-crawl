@@ -4,6 +4,7 @@ class Player:
         """Initialize a player"""
         self.current_galaxy = None
         self.docked = False
+        self.orbiting = False
         self.bodies_in_view = []
         self.position = None
 
@@ -12,10 +13,12 @@ class Player:
         self.current_galaxy = galaxy
         self.position = self.current_galaxy.get_station_position()
         self.docked = True
+        self.orbiting = False
 
     def launch(self):
         """Leave the dock area"""
         self.docked = False
+        self.orbiting = False
         self.bodies_in_view = \
                 self.current_galaxy.get_bodies_in_view(self.position)
 

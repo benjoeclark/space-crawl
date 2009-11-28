@@ -40,9 +40,7 @@ class GalaxySelection(subgame.Subgame):
 
     def get_title(self):
         """Game startup introduction"""
-        introduction = ['You have been chosen as captain of a colony',
-                'sent to Milky Way 10',
-                'Select a starting galaxy:']
+        introduction = ['Select a starting galaxy:']
         return introduction
 
     def number(self):

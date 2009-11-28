@@ -2,6 +2,7 @@
 
 import random
 import math
+import planet
 import body
 import station
 
@@ -14,11 +15,12 @@ class Galaxy:
         self.height = 30
         self.position = position
         self.name = name
-        self.symbol = 'o'
+        self.symbol = 'O'
         self.bodies = [station.Station(self.generate_position(),
             self.name + ' Station')]
         for index in range(random.randint(5, 10)):
-            self.bodies.append(body.Body(self.generate_position(), str(index)))
+            self.bodies.append(planet.Planet(self.generate_position(),
+                str(index)))
 
     def __repr__(self):
         """String representation of the galazy"""
