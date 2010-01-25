@@ -1,50 +1,88 @@
+Milky Way 10
+============
+
+Will space be the place to continue human civilization or the last great graveyard of manking?  Only the pilots of Milky Way 10 will determine the outcome of the human race.  As a pilot for your colony, you must make a place for your people to survive in the difficulty of space.
+
 Use cases
-=========
+---------
 
-Anytime
--------
+### Anytime
 
-* Type quit to quit the game (at any time).
+* Type q to quit the game (at any time).
+* The game should prompt the user to confirm quitting (and/or give option to save progress).
 
-Game start
-----------
+### Game start
 
-* When the game starts, show instructions and a list of starting galaxies, showing the currently selected galaxy.
-* Type name of galaxy to switch to it, show newly selected galaxy.
-* Type select to choose the currently selected galaxy.
+* When the game starts, offer to go through a tutorial for the controls and game concepts.
 
-Dock
-----
+### Dock
 
 * Show current location, ship, inventory.
 * Give list of options for quests/subplots.
-* Give command list, leave dock when launched.
+* Give command list, leave dock when launched with the l command.
 
-Movement
---------
+### Movement
 
 * After launch, show over current location.
-* Ordinal directions move ship one space in that direction.
-* When the ship moves over a station, go to the docking screen.
-* When the ship moves over a planet, go to an orbit screen.
-* When the ship moves over a gate, go to universe screen.
+* To increase the thrust, type w.
+* To decrease the thrust, type s.
+* To rotate clockwise, type d.
+* To rotate counterclockwise, type a.
+* The player can land at locations with the l command.
+* When the ship lands at a station, go to the docking screen.
+* When the ship lands at a planet, go to an orbit screen.
+* When the ship lands at a gate, go to universe screen.
 
-Universe
---------
+### Universe
 
 * Can be viewed at anytime (like a map).
 * At a gate, show the locations that can contain gates (safe jumps), and those that have no gates (that would require gate construction).
 
-Orbit
------
+### Galaxy
 
-* When over a planet, list commands to can planet for items.
+* Randomly generated galaxies with planets, moons, enemies, and resources available.
+* Each galaxy should have a safety/danger value.
+
+### Orbit
+
 * Planet may contain items needed for quests/subplots, can be discovered in this way.
 * When item found, go through recovery (could be future mini-game).
 
 Possible quests
-===============
+---------------
 
-* Locate materials to build jumpgate home.
+* Locate materials to build colony station.
 * Accumulate materials to build new ship.
 * Ship combat.
+
+Blueprints
+----------
+
+* Alternative to purchasing equipment.
+* Only way to build components for colony station.
+* Along the lines of a technology tree from other games.
+
+Ships
+-----
+
+Ships are a primary part of the game as they determine capabilities of the pilot and available ports for weapons, cargo, etc.
+
+### Pod
+
+The basic starting ship, has very limited places for weapons, power, cargo, and shields.
+
+### Shuttle
+
+Increased capacity ship, but limited combat ability.
+
+### Drone
+
+Mobile attack vehicle with no cargo capacity.
+
+### Frigate
+
+Larger ship for attack.
+
+### Capital
+
+Largest ship class, a mobile attack station.  This will be very difficult to build.
