@@ -1,2 +1,8 @@
+"""mw10 __init__
+
+Initialization of the mw10 library"""
+
+import game
+
 def play():
-    print 'play the game'
+    game.Game()

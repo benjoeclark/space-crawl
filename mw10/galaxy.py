@@ -9,8 +9,8 @@ class Galaxy:
     initialization of a galaxy"""
     def __init__(self, position, name='Milky Way 10'):
         """Initialize a galaxy"""
-        self.width = 30
-        self.height = 30
+        self.width = 30.
+        self.height = 30.
         self.position = position
         self.name = name
         self.symbol = 'O'
@@ -26,9 +26,9 @@ class Galaxy:
 
     def generate_position(self):
         """Get a random position in the galaxy"""
-        x = random.randint(-self.width/2, self.width/2)
-        y = random.randint(-self.height/2, self.height/2)
-        return x, y
+        x = random.uniform(-self.width/2, self.width/2)
+        y = random.uniform(-self.height/2, self.height/2)
+        return [x, y]
 
     def get_name(self):
         """Return the galaxy name"""

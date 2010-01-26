@@ -34,6 +34,8 @@ class Pod(Ship):
     """The pod ship"""
     def __init__(self):
         """Initialize the pod ship"""
+        self.max_thrust = 1000.
+        self.mass = 1000.
         self.image = [
                 r'  -  ',
                 r' /0\ ',

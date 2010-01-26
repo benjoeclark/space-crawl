@@ -1,3 +1,7 @@
+"""universe
+
+This module contains the classes for keeping track of the game universe"""
+
 import random
 import galaxy
 
