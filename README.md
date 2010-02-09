@@ -54,6 +54,7 @@ Possible quests
 * Locate materials to build colony station.
 * Accumulate materials to build new ship.
 * Ship combat.
+* Build station for colony.
 
 Blueprints
 ----------
