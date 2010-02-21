@@ -1,3 +1,10 @@
+"""game.py
+
+This module contains the handlers for the mw10 game"""
+
+import threading
+import time
+import curses
 import universe
 import player
 import display
@@ -6,43 +13,65 @@ import dock
 import orbit
 import flight
 
-class Game:
-    """The game class to handle the background actions for playing mw10"""
-    def __init__(self, display_type):
-        """Initialize a game"""
-        self.game_running = True
-        self.universe = universe.Universe()
-        self.player = player.Player()
-        self.display = display.TextDisplay()
-        self.display.set_prompt(self.get_prompt())
-        self.run()
+class Input(threading.Thread):
+    """Class for handling getting input from the user and acting on it"""
+    def __init__(self, game):
+        """Initialize the input thread, keeping track of the game"""
+        self.game = game
+        threading.Thread.__init__(self)
 
     def run(self):
-        """Run the game, selecting the appropriate subgame to pass off
-        focus to"""
-        while self.game_running:
-            self.select_subgame()
+        """Run the input thread to wait for user input"""
+        while self.game.running:
+            self.game.handle_command(self.game.screen.getch())
 
-    def select_subgame(self):
-        """Select the appropriate subgame to play"""
-        if self.player.current_galaxy == None:
-            return galaxyselection.GalaxySelection(self)
-        elif self.player.docked:
-            return dock.Dock(self)
-        elif self.player.orbiting:
-            return orbit.Orbit(self)
-        elif len(self.player.bodies_in_view) > 0:
-            return flight.Flight(self)
+
+class Game:
+    """The class to handle actions for the game"""
+    def __init__(self, fps=5):
+        """Initialize the game by initializing all required variables
+        and starting the screen through the class start method"""
+        # running variables
+        self.fps=fps
+        self.running = True
+        self.state = 0
+        # game classes
+        self.universe = universe.Universe()
+        self.player = player.Player()
+        curses.wrapper(self.start)
+
+    def start(self, screen):
+        """Start the game with the included screen by starting the game
+        threads"""
+        curses.curs_set(0) #Make the cursor invisible
+        curses.raw()
+        self.screen = screen
+        Input(self).start()
+        while self.running:
+            self.show_state()
+            time.sleep(1./self.fps)
+
+    def show_state(self):
+        """Show the current game state"""
+        self.screen.clear()
+        self.move()
+        self.screen.addstr(1, 1, str(self.player.position[1]))
+        self.screen.addstr(2, 1, str(self.player.velocity))
+        self.screen.addstr(3, 1, str(self.player.thrust))
+        self.screen.addstr(4, 1, str(self.state))
+        self.screen.refresh()
+
+    def move(self):
+        """Call the move command for all mobile objects"""
+        self.player.move(1./self.fps)
+
+    def handle_command(self, ch):
+        """Handle the command from the user"""
+        if ch == 27:
+            self.running = False
+        elif ch == ord('w'):
+            self.player.change_thrust(10)
+        elif ch == ord('s'):
+            self.player.change_thrust(-10)
         else:
-            print 'nowhere to go'
-            self.game_running = False
-    
-    def game_over(self):
-        """Display a game over sign"""
-        self.game_running = False
-        buffer = ['Goodbye for now']
-        self.display.set_sprites(buffer)
-
-    def get_prompt(self):
-        """Get the customizable prompt string"""
-        return '@MW10 $'
+            self.state = ch
