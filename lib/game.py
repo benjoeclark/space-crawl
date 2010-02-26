@@ -2,25 +2,28 @@
 
 This module starts and tracks the MW10 game"""
 
-import ui
+import curses
 
 class Game:
     """Main game class"""
     def __init__(self):
-        """Initialize and start the game"""
-        self.log = open('log', 'w')
-        self.input = ui.Input()
-        self.screen = ui.Screen()
+        """Start the game through curses"""
+        curses.wrapper(self.start)
+
+    def start(self, screen):
+        """Initialize the game"""
         self.running = True
+        self.screen = screen
+        curses.raw()
+        curses.curs_set(0) # make the cursor invisible
         self.run()
-        self.log.close()
 
     def run(self):
         """Main game loop"""
         while self.running:
-            key = self.input()
-            self.log.write(str(ord(key)) + '\n')
-            if ord(key) == 27:
+            key = self.screen.getch()
+            if key == 27:
                 self.running = False
-            self.screen.message(key)
-            self.screen.flip()
+            self.screen.clear()
+            self.screen.addstr(0, 0, str(key))
+            self.screen.refresh()
