@@ -53,8 +53,8 @@ class Star(pyglet.sprite.Sprite):
         solid_color = pyglet.image.SolidColorImagePattern((128, 128, 128, 255))
         super(Star, self).__init__(solid_color.create_image(2, 2), x=random.uniform(100, 700), y=random.uniform(100, 500), batch=batch)
     def update(self, dt):
-        self.x += dt * self.player.vx
-        self.y += dt * self.player.vy
+        self.x += dt * self.player.vel
+        self.y += dt * self.player.vel
         
 
 if __name__ == '__main__':
