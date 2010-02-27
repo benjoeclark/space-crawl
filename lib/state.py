@@ -5,7 +5,7 @@ Module to handle various game states"""
 import space
 import player
 
-class State:
+class State(object):
     """State superclass"""
     def __init__(self, screen, universe=None):
         """Generic class initialization"""
@@ -56,9 +56,9 @@ class Flight(State):
                 elif isinstance(body, player.Npc):
                     combat_collision = True
             if combat_collision:
-                return Combat(self.screen, self.universe)
+                return Combat(self.screen, self.universe, collision)
             elif orbit_collision:
-                return Orbit(self.screen, self.universe)
+                return Orbit(self.screen, self.universe, collision)
 
     def show_galaxy(self):
         height, width = self.screen.getmaxyx()
@@ -81,11 +81,16 @@ class Flight(State):
         return body.x - player.x, body.y - player.y
 
 
-class Combat(State):
+class CollisionState(State):
+    def __init__(self, screen, universe, collisions):
+        self.collisions = collisions
+        super(CollisionState, self).__init__(screen, universe)
+
+
+class Combat(CollisionState):
     def start(self):
-        collisions = self.universe.detect_collision()
         self.combatants = []
-        for body in collisions:
+        for body in self.collisions:
             if isinstance(body, player.Npc):
                 self.combatants.append(body)
         self.screen.clear()
@@ -96,12 +101,22 @@ class Combat(State):
         return Flight(self.screen, self.universe)
 
 
-class Orbit(State):
+class Orbit(CollisionState):
     def start(self):
-        collisions = self.universe.detect_collision()
-        self.planet = collisions[0]
+        self.planet = self.collisions[0]
         self.screen.clear()
         self.screen.addstr(0, 0, 'Orbiting ' + self.planet.name)
+
+    def handle_key(self, key):
+        self.screen.clear()
+        return Flight(self.screen, self.universe)
+
+
+class Docked(CollisionState):
+    def start(self):
+        self.station = self.collisions[0]
+        self.screen.clear()
+        self.screen.addstr(0, 0, 'Docked at ' + self.station.name)
 
     def handle_key(self, key):
         self.screen.clear()
