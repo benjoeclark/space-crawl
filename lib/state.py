@@ -83,8 +83,13 @@ class Flight(State):
 
 class Combat(State):
     def start(self):
+        collisions = self.universe.detect_collision()
+        self.combatants = []
+        for body in collisions:
+            if isinstance(body, player.Npc):
+                self.combatants.append(body)
         self.screen.clear()
-        self.screen.addstr(0, 0, 'In combat')
+        self.screen.addstr(0, 0, 'In combat with ' + self.combatants[0].name)
 
     def handle_key(self, key):
         self.screen.clear()
@@ -93,8 +98,10 @@ class Combat(State):
 
 class Orbit(State):
     def start(self):
+        collisions = self.universe.detect_collision()
+        self.planet = collisions[0]
         self.screen.clear()
-        self.screen.addstr(0, 0, 'In orbit')
+        self.screen.addstr(0, 0, 'Orbiting ' + self.planet.name)
 
     def handle_key(self, key):
         self.screen.clear()

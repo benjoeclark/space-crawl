@@ -23,7 +23,7 @@ class Galaxy:
             self.bodies.append(Planet(x, y))
         for count in xrange(random.randint(5, 10)):
             x, y = self.generate_position()
-            self.bodies.append(player.Npc(x, y, '!'))
+            self.bodies.append(player.Npc(x, y, '!', 'enemy'))
 
     def generate_position(self):
         x, y = None, None
@@ -41,7 +41,8 @@ class Galaxy:
         return True
 
 class Planet:
-    def __init__(self, x, y, symbol='o'):
+    def __init__(self, x, y, symbol='o', name='planet'):
         self.x = x
         self.y = y
         self.symbol = symbol
+        self.name = name
