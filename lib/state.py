@@ -83,15 +83,19 @@ class Flight(State):
 
 class Combat(State):
     def start(self):
+        self.screen.clear()
         self.screen.addstr(0, 0, 'In combat')
 
     def handle_key(self, key):
+        self.screen.clear()
         return Flight(self.screen, self.universe)
 
 
 class Orbit(State):
     def start(self):
+        self.screen.clear()
         self.screen.addstr(0, 0, 'In orbit')
 
     def handle_key(self, key):
+        self.screen.clear()
         return Flight(self.screen, self.universe)
