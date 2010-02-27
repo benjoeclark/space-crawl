@@ -3,8 +3,6 @@
 This module starts and tracks the MW10 game"""
 
 import curses
-import player
-import universe
 import state
 
 class Game:
@@ -16,7 +14,6 @@ class Game:
     def start(self, screen):
         """Initialize the game"""
         self.running = True
-        self.universe = universe.Universe()
         self.ui = screen
         self.screen = screen.subwin(23, 79, 0, 0)
         curses.raw()

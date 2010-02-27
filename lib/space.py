@@ -7,9 +7,11 @@ class Universe:
         self.galaxy = Galaxy()
 
     def detect_collision(self):
+        collisions = []
         for body in self.galaxy.bodies:
             if body.x == self.player.x and body.y == self.player.y:
-                return body
+                collisions.append(body)
+        return collisions
 
 
 class Galaxy:

@@ -2,14 +2,15 @@
 
 Module to handle various game states"""
 
-from universe import Universe
+import space
+import player
 
 class State:
     """State superclass"""
     def __init__(self, screen, universe=None):
         """Generic class initialization"""
         self.screen = screen
-        self.universe = universe if universe is not None else Universe()
+        self.universe = universe if universe is not None else space.Universe()
         self.start()
 
     def start(self):
@@ -44,10 +45,20 @@ class Flight(State):
         elif key == ord('l'):
             self.universe.player.move(0, 1)
         self.screen.clear()
-        collision = self.universe.detect_collision()
-        if collision is not None:
-            self.screen.addstr(0, 0, 'collision detected')
         self.show_galaxy()
+        collision = self.universe.detect_collision()
+        if len(collision) > 0:
+            combat_collision = False
+            orbit_collision = False
+            for body in collision:
+                if isinstance(body, space.Planet):
+                    orbit_collision = True
+                elif isinstance(body, player.Npc):
+                    combat_collision = True
+            if combat_collision:
+                return Combat(self.screen, self.universe)
+            elif orbit_collision:
+                return Orbit(self.screen, self.universe)
 
     def show_galaxy(self):
         height, width = self.screen.getmaxyx()
@@ -68,3 +79,19 @@ class Flight(State):
 
     def relative_position(self, body, player):
         return body.x - player.x, body.y - player.y
+
+
+class Combat(State):
+    def start(self):
+        self.screen.addstr(0, 0, 'In combat')
+
+    def handle_key(self, key):
+        return Flight(self.screen, self.universe)
+
+
+class Orbit(State):
+    def start(self):
+        self.screen.addstr(0, 0, 'In orbit')
+
+    def handle_key(self, key):
+        return Flight(self.screen, self.universe)
