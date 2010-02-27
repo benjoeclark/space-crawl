@@ -21,7 +21,7 @@ class Game:
         self.screen = screen.subwin(23, 79, 0, 0)
         curses.raw()
         curses.curs_set(0) # make the cursor invisible
-        self.state = [state.New(self.screen)]
+        self.state = state.New(self.screen)
         self.run()
 
     def run(self):
@@ -31,8 +31,8 @@ class Game:
             if key == 27:
                 self.running = False
             else:
-                next_state = self.state[0].handle_key(key)
+                next_state = self.state.handle_key(key)
                 if next_state is not None:
-                    self.state.insert(0, next_state)
+                    self.state = next_state
             self.screen.addstr(22, 0, str(key))
             self.screen.refresh()

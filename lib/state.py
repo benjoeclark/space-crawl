@@ -44,15 +44,27 @@ class Flight(State):
         elif key == ord('l'):
             self.universe.player.move(0, 1)
         self.screen.clear()
-        self.screen.addstr(0, 0, 'in flight')
+        collision = self.universe.detect_collision()
+        if collision is not None:
+            self.screen.addstr(0, 0, 'collision detected')
         self.show_galaxy()
 
     def show_galaxy(self):
         height, width = self.screen.getmaxyx()
-        self.screen.addstr(height/2, width/2, '@')
+        self.screen.addstr(height/2, width/2, self.universe.player.symbol)
         for body in self.universe.galaxy.bodies:
             x, y = self.relative_position(body, self.universe.player)
-            self.screen.addstr(x+height/2, y+width/2, '*')
+            x += height/2
+            y += width/2
+            if x < 1:
+                x = 1
+            elif x >= height-2:
+                x = height-2
+            if y < 1:
+                y = 1
+            elif y >= width-2:
+                y = width-2
+            self.screen.addstr(x, y, body.symbol)
 
     def relative_position(self, body, player):
         return body.x - player.x, body.y - player.y
