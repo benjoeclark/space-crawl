@@ -1,9 +1,10 @@
 import player
+import ship
 import random
 
 class Universe:
     def __init__(self):
-        self.player = player.Player()
+        self.player = player.Player(ship=ship.Pod())
         self.galaxy = Galaxy()
 
     def detect_collision(self):
@@ -23,7 +24,7 @@ class Galaxy:
             self.bodies.append(Planet(x, y))
         for count in xrange(random.randint(5, 10)):
             x, y = self.generate_position()
-            self.bodies.append(player.Npc(x, y, '!', 'enemy'))
+            self.bodies.append(player.Npc(x, y, '!', 'enemy', ship.Pod()))
 
     def generate_position(self):
         x, y = None, None

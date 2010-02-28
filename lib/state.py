@@ -44,6 +44,8 @@ class Flight(State):
             self.universe.player.move(0, -1)
         elif key == ord('l'):
             self.universe.player.move(0, 1)
+        elif key == ord('i'):
+            return Inventory(self.screen, self.universe)
         self.screen.clear()
         self.show_galaxy()
         collision = self.universe.detect_collision()
@@ -79,6 +81,32 @@ class Flight(State):
 
     def relative_position(self, body, player):
         return body.x - player.x, body.y - player.y
+
+
+class Inventory(State):
+    def start(self):
+        self.screen.clear()
+        self.show_ship()
+        self.show_inventory()
+
+    def handle_key(self, key):
+        self.screen.clear()
+        return Flight(self.screen, self.universe)
+
+    def show_ship(self):
+        ship_image = self.universe.player.ship.get_image()
+        ship_status = ''
+        ship_status += str(self.universe.player.ship.get_hull()) 
+        ship_status += ' hull | '
+        ship_status += str(self.universe.player.ship.get_shield())
+        ship_status += ' shield'
+        self.screen.addstr(0, 0, ship_status)
+        for line, line_number in zip(ship_image, range(len(ship_image))):
+            self.screen.addstr(1+line_number, 0, line)
+
+    def show_inventory(self):
+        pass
+
 
 
 class CollisionState(State):
