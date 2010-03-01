@@ -1,5 +1,6 @@
 import player
 import ship
+import circle
 import random
 
 class Universe:
@@ -47,3 +48,8 @@ class Planet:
         self.y = y
         self.symbol = symbol
         self.name = name
+        self.radius = random.randint(3, 8)
+        self.generate_image()
+
+    def generate_image(self):
+        self.image = circle.Circle(self.radius, '*').get_circle_strings()

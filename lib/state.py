@@ -4,6 +4,7 @@ Module to handle various game states"""
 
 import space
 import player
+import circle
 
 class State(object):
     """State superclass"""
@@ -132,12 +133,26 @@ class Combat(CollisionState):
 class Orbit(CollisionState):
     def start(self):
         self.planet = self.collisions[0]
+        self.orbit = circle.Path(self.planet.radius+2, path_symbol='.')
         self.screen.clear()
         self.screen.addstr(0, 0, 'Orbiting ' + self.planet.name)
+        self.show_planet()
 
     def handle_key(self, key):
         self.screen.clear()
-        return Flight(self.screen, self.universe)
+        if key == ord(' '):
+            self.orbit.next()
+            self.show_planet()
+        else:
+            return Flight(self.screen, self.universe)
+
+    def show_planet(self):
+        for line, line_number in zip(self.orbit.get_circle_strings(),
+                range(len(self.orbit.get_circle_strings()))):
+            self.screen.addstr(1+line_number, 0, line)
+        for line, line_number in zip(self.planet.image, range(len(self.planet.image))):
+            spaces_count = len(line) - len(line.lstrip())
+            self.screen.addstr(3+line_number, 4+spaces_count, line.strip())
 
 
 class Docked(CollisionState):

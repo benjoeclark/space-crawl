@@ -49,38 +49,8 @@ class Path(Circle):
             self.current_pixel = 0
         self.place_symbol(self.pixels[self.current_pixel], self.object_symbol)
         
-def get_circle_list(radius, font_ratio=0.45):
-    # generate angles around circle
-    angles = []
-    for degree in range(360):
-        angles.append(math.pi*degree/180.)
-    # generate positions
-    positions = []
-    for angle in angles:
-        positions.append([radius*math.sin(angle), radius*math.cos(angle)/font_ratio])
-    # round to integer values
-    blocks = [[int(round(p[0])), int(round(p[1]))] for p in positions]
-    # remove duplicate copies
-    pixels = []
-    for block in blocks:
-        if block not in pixels:
-            pixels.append(block)
-    return pixels
-
-def get_circle_strings(radius, symbol, pixels=None, font_ratio=0.45):
-    pixels = get_circle_list(radius, font_ratio) if pixels is None else pixels
-    extent = int(round(radius))*2
-    horiz_extent = int(round(radius/font_ratio))*2
-    screen = [' '*(horiz_extent+1)]*(extent+1)
-    for pixel in pixels:
-        place_symbol(screen, pixel[0]+extent/2, pixel[1]+horiz_extent/2, symbol)
-    return screen
-
-def place_symbol(screen, x, y, symbol):
-    screen[x] = screen[x][:y] + symbol + screen[x][y+1:]
 
 if __name__ == '__main__':
-    print '\n'.join(get_circle_strings(5, '.'))
     circle = Circle(8, '0')
     print '\n'.join(circle.get_circle_strings())
     path = Path(3, path_symbol='.')
