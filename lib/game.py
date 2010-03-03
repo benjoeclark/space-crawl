@@ -18,11 +18,12 @@ class Game:
         self.running = True
         self.ui = screen
         self.screen = screen.subwin(23, 79, 0, 0)
-        try:
-            save_file = open('mw10.save', 'r')
-            self.universe = cPickle.load(save_file)
-        except:
-            self.universe = space.Universe()
+        #try:
+        #    save_file = open('mw10.save', 'r')
+        #    self.universe = cPickle.load(save_file)
+        #except:
+        #    self.universe = space.Universe()
+        self.universe = space.Universe()
         curses.raw()
         curses.curs_set(0) # make the cursor invisible
         self.state = state.GalaxySelector(self.screen, self.universe)

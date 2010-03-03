@@ -8,10 +8,10 @@ class Universe:
         self.generate_universe()
         self.player = player.Player(ship=ship.Pod())
 
-    def generate_universe(self):
-        self.height, self.width = self.screen.getmaxyx()
+    def generate_universe(self, height=23, width=79):
+        self.height, self.width = height, width
         self.positions = []
-        for x in range(1, self.heigth):
+        for x in range(1, self.height):
             for y in range(self.width):
                 self.positions.append([x, y])
         self.galaxy_positions = []
@@ -32,7 +32,7 @@ class Universe:
                 self.get_paths(base_galaxy, self.galaxy_positions[-1])
         self.galaxies = []
         for index in range(len(self.galaxy_positions)):
-            self.galaxies.append(self.galaxy_positions, self.get_danger(index))
+            self.galaxies.append(Galaxy(self.galaxy_positions[index], self.get_danger(index)))
 
     def get_danger(self, index):
         return int(10./len(self.galaxy_positions) * index)

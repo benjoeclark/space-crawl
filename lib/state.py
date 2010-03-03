@@ -23,7 +23,7 @@ class State(object):
 class GalaxySelector(State):
     def start(self):
         self.screen.clear()
-        self.generate_universe()
+        self.selection = 0
         self.show_universe()
 
     def handle_key(self, key):
@@ -40,17 +40,23 @@ class GalaxySelector(State):
             return Flight(self.screen, self.universe)
         self.show_universe()
 
+    def show_universe(self):
+        for path in self.universe.paths:
+            self.screen.addstr(path[0], path[1], '.')
+        for galaxy in self.universe.galaxies:
+            self.screen.addstr(galaxy.position[0], galaxy.position[1], 'O')
+        self.show_selection()
+
     def select_direction(self, direction):
-        base = self.galaxies[self.selection]
-        new_base = None
+        base = self.universe.galaxies[self.selection].position
         position = base[:]
-        if [base[0]+direction[0], base[1]+direction[1]] in self.paths:
-            while new_base is None:
+        if [base[0]+direction[0], base[1]+direction[1]] in self.universe.paths:
+            while True:
                 position[0] += direction[0]
                 position[1] += direction[1]
-                if position in self.galaxies:
-                    self.selection = self.galaxies.index(position)
-                if position not in self.paths:
+                if position in self.universe.galaxy_positions:
+                    self.selection = self.universe.galaxy_positions.index(position)
+                if position not in self.universe.paths:
                     return None
 
     def generate_universe(self):
@@ -75,7 +81,10 @@ class GalaxySelector(State):
         self.selection = 0
 
     def show_selection(self):
-        self.screen.addstr(self.galaxies[self.selection][0], self.galaxies[self.selection][1], '^')
+        self.screen.addstr(self.universe.galaxies[self.selection].position[0],
+                        self.universe.galaxies[self.selection].position[1], '^')
+        self.screen.addstr(0, 0, 'Galaxy with danger of ' +
+                        str(self.universe.galaxies[self.selection].danger))
 
     def get_paths(self, base, remote):
         for x in range(base[0]+1, remote[0]):
@@ -135,13 +144,6 @@ class GalaxySelector(State):
         if len(possible) == 0:
             return None
         return random.choice(possible)
-
-    def show_universe(self):
-        for path in self.paths:
-            self.screen.addstr(path[0], path[1], '.')
-        for galaxy, index in zip(self.galaxies, range(len(self.galaxies))):
-            self.screen.addstr(galaxy[0], galaxy[1], 'O')
-        self.show_selection()
 
 
 
