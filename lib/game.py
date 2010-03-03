@@ -25,7 +25,7 @@ class Game:
             self.universe = space.Universe()
         curses.raw()
         curses.curs_set(0) # make the cursor invisible
-        self.state = state.New(self.screen, self.universe)
+        self.state = state.GalaxySelector(self.screen, self.universe)
         self.run()
 
     def run(self):
@@ -39,7 +39,6 @@ class Game:
                 next_state = self.state.handle_key(key)
                 if next_state is not None:
                     self.state = next_state
-            self.screen.addstr(22, 0, str(key))
             self.screen.refresh()
 
     def save(self):
