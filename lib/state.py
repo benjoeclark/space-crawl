@@ -12,8 +12,14 @@ class State(object):
     def __init__(self, screen, universe=None):
         """Generic class initialization"""
         self.screen = screen
-        self.universe = universe if universe is not None else space.Universe()
+        self.universe = universe
+        if universe is None:
+            self.no_universe()
         self.start()
+
+    def no_universe(self):
+        """Create an empty universe"""
+        self.universe = space.Universe()
 
     def start(self):
         """Initialization function to be implemented in the subclass"""
@@ -150,13 +156,32 @@ class GalaxySelector(State):
 class New(State):
     def start(self):
         """Welcome the user and start a new game"""
+        self.current_selection = 0
+        self.menu = ['Start New Game']
+        self.get_saves()
+        self.show_menu()
+
+    def get_saves(self):
+        """Get the found save games"""
+        pass
+
+    def show_menu(self, spacing=4, offset=4):
+        """Show the menu"""
         self.screen.clear()
         self.screen.addstr(0, 0, 'Welcome to MW10')
         self.screen.addstr(1, 0, 'press any key to launch into the unknown')
+        for entry_index in range(len(self.menu)):
+            self.screen.addstr(spacing+entry_index, offset+2,
+                                self.menu[entry_index])
+        self.screen.addstr(spacing+self.current_selection, offset, '*')
+
+    def no_universe(self):
+        """Catch the call that no universe is given"""
+        pass
 
     def handle_key(self, key):
         """On any keypress, launch the ship"""
-        self.screen.clear()
+        self.show_menu()
         return Flight(self.screen, self.universe)
 
 

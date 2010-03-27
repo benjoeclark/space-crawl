@@ -23,10 +23,11 @@ class Game:
         #    self.universe = cPickle.load(save_file)
         #except:
         #    self.universe = space.Universe()
-        self.universe = space.Universe()
+        #self.universe = space.Universe()
         curses.raw()
         curses.curs_set(0) # make the cursor invisible
-        self.state = state.GalaxySelector(self.screen, self.universe)
+        self.state = state.New(self.screen)
+        #self.state = state.GalaxySelector(self.screen, self.universe)
         self.run()
 
     def run(self):
