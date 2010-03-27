@@ -10,8 +10,15 @@ class Pilot(object):
         self.x += dx
         self.y += dy
 
-class Player(Pilot):
+class PilotPlayer(Pilot):
     pass
 
 class Npc(Pilot):
+    pass
+
+class Commander(object):
+    def __init__(self, faction):
+        self.faction = faction
+
+class Player(Commander):
     pass

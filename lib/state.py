@@ -13,6 +13,7 @@ class State(object):
         """Generic class initialization"""
         self.screen = screen
         self.universe = universe
+        self.changed = True
         if universe is None:
             self.no_universe()
         self.start()
@@ -24,6 +25,52 @@ class State(object):
     def start(self):
         """Initialization function to be implemented in the subclass"""
         pass
+
+    def show(self):
+        if self.changed:
+            self.refresh()
+            self.screen.refresh()
+
+    def refresh(self):
+        pass
+
+
+class New(State):
+    def start(self):
+        """Welcome the user and start a new game"""
+        self.current_selection = 0
+        self.menu = ['Brogans', 'Spartans', 'Krilons']
+        self.show_menu()
+
+    def refresh(self):
+        """Refresh the screen"""
+        self.changed = False
+        self.show_menu()
+
+    def show_menu(self, spacing=4, offset=4):
+        """Show the menu"""
+        self.screen.clear()
+        self.screen.addstr(0, 0, 'Welcome to space-crawl')
+        self.screen.addstr(1, 0, 'select a faction to begin')
+        for entry_index in range(len(self.menu)):
+            self.screen.addstr(spacing+entry_index, offset+2,
+                                self.menu[entry_index])
+        self.screen.addstr(spacing+self.current_selection, offset, '*')
+
+    def no_universe(self):
+        """Catch the call that no universe is given"""
+        pass
+
+    def handle_key(self, key):
+        """On any keypress, launch the ship"""
+        self.changed = True
+        if key == ord('j'):
+            self.current_selection += 1
+        elif key == ord('k'):
+            self.current_selection += -1
+        elif key == ord('\n'):
+            self.universe = space.Universe(player.Player(self.menu[self.current_selection]))
+            return GalaxySelector(self.screen, self.universe)
 
 
 class GalaxySelector(State):
@@ -150,39 +197,6 @@ class GalaxySelector(State):
         if len(possible) == 0:
             return None
         return random.choice(possible)
-
-
-
-class New(State):
-    def start(self):
-        """Welcome the user and start a new game"""
-        self.current_selection = 0
-        self.menu = ['Start New Game']
-        self.get_saves()
-        self.show_menu()
-
-    def get_saves(self):
-        """Get the found save games"""
-        pass
-
-    def show_menu(self, spacing=4, offset=4):
-        """Show the menu"""
-        self.screen.clear()
-        self.screen.addstr(0, 0, 'Welcome to MW10')
-        self.screen.addstr(1, 0, 'press any key to launch into the unknown')
-        for entry_index in range(len(self.menu)):
-            self.screen.addstr(spacing+entry_index, offset+2,
-                                self.menu[entry_index])
-        self.screen.addstr(spacing+self.current_selection, offset, '*')
-
-    def no_universe(self):
-        """Catch the call that no universe is given"""
-        pass
-
-    def handle_key(self, key):
-        """On any keypress, launch the ship"""
-        self.show_menu()
-        return Flight(self.screen, self.universe)
 
 
 class Flight(State):

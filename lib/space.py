@@ -4,9 +4,9 @@ import circle
 import random
 
 class Universe:
-    def __init__(self):
+    def __init__(self, user):
         self.generate_universe()
-        self.player = player.Player(ship=ship.Pod())
+        self.player = user
 
     def generate_universe(self, height=23, width=79):
         self.height, self.width = height, width
