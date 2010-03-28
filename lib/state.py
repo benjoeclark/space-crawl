@@ -94,8 +94,8 @@ class GalaxySelector(State):
         self.show_universe()
 
     def show_universe(self):
-        for path in self.universe.paths:
-            self.screen.addstr(path[0], path[1], '.')
+        #for path in self.universe.paths:
+        #    self.screen.addstr(path[0], path[1], '.')
         for galaxy in self.universe.galaxies:
             self.screen.addstr(galaxy.position[0], galaxy.position[1], 'O')
         self.show_selection()
@@ -136,8 +136,8 @@ class GalaxySelector(State):
     def show_selection(self):
         self.screen.addstr(self.universe.galaxies[self.selection].position[0],
                         self.universe.galaxies[self.selection].position[1], '^')
-        self.screen.addstr(0, 0, 'Galaxy with danger of ' +
-                        str(self.universe.galaxies[self.selection].danger))
+        #self.screen.addstr(0, 0, 'Galaxy with danger of ' +
+        #                str(self.universe.galaxies[self.selection].danger))
 
     def get_paths(self, base, remote):
         for x in range(base[0]+1, remote[0]):

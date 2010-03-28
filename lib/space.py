@@ -4,9 +4,31 @@ import circle
 import random
 
 class Universe:
-    def __init__(self, user):
-        self.generate_universe()
+    def __init__(self, user, height=23, width=49, galaxy_count=10):
+        #self.generate_universe()
         self.player = user
+        # Generate the galaxies in the universe
+        self.height, self.width = height, width
+        self.galaxies = []
+        for count in xrange(galaxy_count):
+            self.galaxies.append(Galaxy(self.get_position()))
+
+    def get_position(self):
+        position = None
+        while not self.is_valid_position(position):
+            position = self.get_random_position()
+        return position
+
+    def get_random_position(self):
+        return [random.randint(0, self.height), random.randint(0, self.width)]
+
+    def is_valid_position(self, position):
+        if position is None:
+            return False
+        for galaxy in self.galaxies:
+            if position[0] == galaxy.position[0] and position[1] == galaxy.position[1]:
+                return False
+        return True
 
     def generate_universe(self, height=23, width=79):
         self.height, self.width = height, width
@@ -101,10 +123,9 @@ class Universe:
 
 
 class Galaxy:
-    def __init__(self, position, danger):
+    def __init__(self, position):
         self.bodies = []
         self.position = position
-        self.danger = danger
         self.range = 50
         for count in xrange(random.randint(10, 20)):
             x, y = self.generate_position()
