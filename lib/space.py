@@ -130,9 +130,9 @@ class Galaxy:
         for count in xrange(random.randint(10, 20)):
             x, y = self.generate_position()
             self.bodies.append(Planet(x, y))
-        for count in xrange(random.randint(5, 10)):
-            x, y = self.generate_position()
-            self.bodies.append(player.Npc(x, y, '!', 'enemy', ship.Pod()))
+        #for count in xrange(random.randint(5, 10)):
+        #    x, y = self.generate_position()
+        #    self.bodies.append(player.Npc(x, y, '!', 'enemy', ship.Pod()))
 
     def generate_position(self):
         x, y = None, None

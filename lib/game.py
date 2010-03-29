@@ -20,7 +20,7 @@ class Game:
         self.ui.timeout(0)
         self.screen = screen.subwin(23, 79, 0, 0)
         curses.raw()
-        curses.curs_set(0) # make the cursor invisible
+        #curses.curs_set(0) # make the cursor invisible
         self.state = state.New(self.screen)
         self.run()
 
