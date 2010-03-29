@@ -6,6 +6,7 @@ import space
 import player
 import circle
 import random
+import curses
 
 class State(object):
     """State superclass"""
@@ -38,6 +39,7 @@ class State(object):
 class New(State):
     def start(self):
         """Welcome the user and start a new game"""
+        curses.curs_set(0)
         self.current_selection = 0
         self.menu = ['Brogans', 'Spartans', 'Krilons']
         self.show_menu()
@@ -64,41 +66,59 @@ class New(State):
     def handle_key(self, key):
         """On any keypress, launch the ship"""
         self.changed = True
-        if key == ord('j'):
+        if key == ord('j') and self.current_selection != len(self.menu)-1:
             self.current_selection += 1
-        elif key == ord('k'):
+        elif key == ord('k') and self.current_selection != 0:
             self.current_selection += -1
         elif key == ord('\n'):
             self.universe = space.Universe(player.Player(self.menu[self.current_selection]))
-            return GalaxySelector(self.screen, self.universe)
+            return GalaxyView(self.screen, self.universe)
 
 
-class GalaxySelector(State):
+class GalaxyView(State):
     def start(self):
+        self.changed = True
         self.screen.clear()
+        curses.curs_set(1)
+        self.screen.leaveok(1)
         self.selection = 0
+
+    def refresh(self):
+        self.changed = False
         self.show_universe()
 
     def handle_key(self, key):
         self.screen.clear()
         if key == ord('j'):
-            self.select_direction([1, 0])
+            self.move_cursor([1, 0])
         elif key == ord('k'):
-            self.select_direction([-1, 0])
+            self.move_cursor([-1, 0])
         elif key == ord('h'):
-            self.select_direction([0, -1])
+            self.move_cursor([0, -1])
         elif key == ord('l'):
-            self.select_direction([0, 1])
+            self.move_cursor([0, 1])
         else:
             return Flight(self.screen, self.universe)
-        self.show_universe()
+        self.changed = True
+
+    def move_cursor(self, direction):
+        maxx, maxy = self.screen.getmaxyx()
+        x, y = curses.getsyx()
+        if direction[0] == 1 and x < maxx:
+            curses.setsyx(x+1, y)
+        elif direction[0] == -1 and x > 0:
+            curses.setsyx(x-1, y)
+        elif direction[1] == 1 and y < maxy:
+            curses.setsyx(x, y+1)
+        elif direction[1] == -1 and y > 0:
+            curses.setsyx(x, y-1)
 
     def show_universe(self):
         #for path in self.universe.paths:
         #    self.screen.addstr(path[0], path[1], '.')
         for galaxy in self.universe.galaxies:
-            self.screen.addstr(galaxy.position[0], galaxy.position[1], 'O')
-        self.show_selection()
+            self.screen.addstr(galaxy.position[0], galaxy.position[1], '.')
+        #self.show_selection()
 
     def select_direction(self, direction):
         base = self.universe.galaxies[self.selection].position
