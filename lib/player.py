@@ -7,6 +7,12 @@ class Commander(object):
     def set_system(self, system):
         self.system = system
 
+    def propagate(self, dt):
+        pass
+
+    def starting_base(self, system):
+        self.fleets[0].enter_system(system)
+
 
 class Player(Commander):
     pass
@@ -15,6 +21,10 @@ class Player(Commander):
 class Fleet(object):
     def __init__(self, name='Base'):
         self.name = name
+        self.system = None
+
+    def enter_system(self, system):
+        self.system = system
 
 
 class Pilot(object):

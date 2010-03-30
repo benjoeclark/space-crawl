@@ -64,9 +64,12 @@ class GalaxyView(State):
     def show_galaxy(self):
         self.screen.clear()
         self.screen.ruler()
-        self.screen.grid()
+        #self.screen.grid()
         for system in self.galaxy.systems:
             self.screen.grid_add(system.position, '*')
+        for fleet_index in range(len(self.galaxy.player.fleets)):
+            fleet = self.galaxy.player.fleets[fleet_index]
+            self.screen.grid_add(fleet.system.position, str(fleet_index))
 
     def handle_command(self, command):
         if len(command) == 2:
@@ -93,6 +96,8 @@ class SystemView(SelectionState):
     def show_system(self):
         self.screen.clear()
         self.screen.addstr(1, 1, 'in ' + self.selection.name)
+        for astral in self.selection.astrals:
+            self.screen.plot_from_center(astral.position, astral.symbol)
 
 
 class FleetView(SelectionState):

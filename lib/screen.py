@@ -37,6 +37,11 @@ class Screen:
     def grid_add(self, position, symbol):
         self.addstr(2+3*position[0], 2+3*position[1], symbol)
 
+    def plot_from_center(self, position, symbol):
+        x = position[0] + self.height/2
+        y = position[1] + self.width/2
+        self.addstr(x, y, symbol)
+
     def prompt(self):
         self.view[-1] = '>>>'
 
