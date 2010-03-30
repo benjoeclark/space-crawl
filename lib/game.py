@@ -2,39 +2,45 @@
 
 This module starts and tracks the MW10 game"""
 
-import curses
-import state
 import time
+import screen
+import state
 
 class Game:
     """Main game class"""
-    def __init__(self, fps=10.):
-        """Start the game through curses"""
-        self.fps = fps
-        curses.wrapper(self.start)
-
-    def start(self, screen):
+    def __init__(self):
         """Initialize the game"""
         self.running = True
-        self.ui = screen
-        self.ui.timeout(0)
-        self.screen = screen.subwin(23, 79, 0, 0)
-        curses.raw()
-        #curses.curs_set(0) # make the cursor invisible
+        self.screen = screen.Screen()
         self.state = state.New(self.screen)
         self.run()
 
     def run(self):
         """Main game loop"""
         while self.running:
-            time.sleep(1./self.fps)
-            key = self.ui.getch()
-            if key == -1:
+            now = time.time()
+            self.screen.draw()
+            command = raw_input()
+            self.running = self.handle_command(command)
+            self.state.propagate(time.time() - now)
+        self.screen.addstr(-1, 0, 'Goodbye')
+        self.screen.draw()
+
+    def handle_command(self, command):
+        if command == 'exit':
+            return False
+        elif command == 'galaxy':
+            self.state = state.GalaxyView(self.state.screen, self.state.galaxy)
+        elif len(command) == 1 and command.isdigit():
+            try:
+                fleet = self.state.galaxy.player.fleets[int(command)]
+                self.state = state.FleetView(self.state.screen,
+                                            self.state.galaxy,
+                                            fleet)
+            except IndexError:
                 pass
-            elif key == 27:
-                self.running = False
-            else:
-                next_state = self.state.handle_key(key)
-                if next_state is not None:
-                    self.state = next_state
-            self.state.show()
+        else:
+            new_state = self.state.handle_command(command)
+            if new_state is not None:
+                self.state = new_state
+        return True

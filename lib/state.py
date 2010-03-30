@@ -6,47 +6,37 @@ import space
 import player
 import circle
 import random
-import curses
 
 class State(object):
     """State superclass"""
-    def __init__(self, screen, universe=None):
+    def __init__(self, screen, galaxy=None):
         """Generic class initialization"""
         self.screen = screen
-        self.universe = universe
-        self.changed = True
-        if universe is None:
-            self.no_universe()
+        self.galaxy = galaxy
         self.start()
-
-    def no_universe(self):
-        """Create an empty universe"""
-        self.universe = space.Universe()
 
     def start(self):
         """Initialization function to be implemented in the subclass"""
         pass
 
-    def show(self):
-        if self.changed:
-            self.refresh()
-            self.screen.refresh()
+    def propagate(self, dt):
+        """Propagate the current state"""
+        if self.galaxy is not None:
+            self.galaxy.propagate(dt)
+        self.show()
 
-    def refresh(self):
+    def show(self):
+        """State to print to screen to be implemented in subclass"""
+
+    def handle_command(self, command):
+        """Handle state-specific commands"""
         pass
 
 
 class New(State):
     def start(self):
         """Welcome the user and start a new game"""
-        curses.curs_set(0)
-        self.current_selection = 0
         self.menu = ['Brogans', 'Spartans', 'Krilons']
-        self.show_menu()
-
-    def refresh(self):
-        """Refresh the screen"""
-        self.changed = False
         self.show_menu()
 
     def show_menu(self, spacing=4, offset=4):
@@ -57,36 +47,64 @@ class New(State):
         for entry_index in range(len(self.menu)):
             self.screen.addstr(spacing+entry_index, offset+2,
                                 self.menu[entry_index])
-        self.screen.addstr(spacing+self.current_selection, offset, '*')
 
-    def no_universe(self):
-        """Catch the call that no universe is given"""
-        pass
-
-    def handle_key(self, key):
-        """On any keypress, launch the ship"""
-        self.changed = True
-        if key == ord('j') and self.current_selection != len(self.menu)-1:
-            self.current_selection += 1
-        elif key == ord('k') and self.current_selection != 0:
-            self.current_selection += -1
-        elif key == ord('\n'):
-            self.universe = space.Universe(player.Player(self.menu[self.current_selection]))
-            return GalaxyView(self.screen, self.universe)
+    def handle_command(self, command):
+        """Handle selecting a faction"""
+        if command in self.menu:
+            faction = self.menu[self.menu.index(command)]
+            return GalaxyView(self.screen, space.Galaxy(player.Player(faction), 
+                    len(self.screen.numbers), len(self.screen.letters)))
+        self.show_menu()
 
 
 class GalaxyView(State):
     def start(self):
-        self.changed = True
+        self.show_galaxy()
+
+    def show_galaxy(self):
         self.screen.clear()
-        curses.curs_set(1)
-        self.screen.leaveok(1)
-        self.selection = 0
+        self.screen.ruler()
+        self.screen.grid()
+        for system in self.galaxy.systems:
+            self.screen.grid_add(system.position, '*')
 
-    def refresh(self):
-        self.changed = False
-        self.show_universe()
+    def handle_command(self, command):
+        if len(command) == 2:
+            try:
+                x = self.screen.numbers.index(command[0])
+                y = self.screen.letters.index(command[1])
+                for system in self.galaxy.systems:
+                    if system.position[0] == x and system.position[1] == y:
+                        return SystemView(self.screen, self.galaxy, system)
+            except ValueError:
+                return None
 
+
+class SelectionState(State):
+    def __init__(self, screen, galaxy, selection):
+        self.selection = selection
+        super(SelectionState, self).__init__(screen, galaxy)
+
+
+class SystemView(SelectionState):
+    def start(self):
+        self.show_system()
+
+    def show_system(self):
+        self.screen.clear()
+        self.screen.addstr(1, 1, 'in ' + self.selection.name)
+
+
+class FleetView(SelectionState):
+    def start(self):
+        self.show_status()
+
+    def show_status(self):
+        self.screen.clear()
+        self.screen.addstr(1, 1, 'viewing ' + self.selection.name)
+
+
+class OldGalaxy:
     def handle_key(self, key):
         self.screen.clear()
         if key == ord('j'):

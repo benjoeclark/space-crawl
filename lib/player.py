@@ -1,3 +1,22 @@
+class Commander(object):
+    def __init__(self, faction):
+        self.faction = faction
+        self.system = None
+        self.fleets = [Fleet()]
+
+    def set_system(self, system):
+        self.system = system
+
+
+class Player(Commander):
+    pass
+
+
+class Fleet(object):
+    def __init__(self, name='Base'):
+        self.name = name
+
+
 class Pilot(object):
     def __init__(self, x=0, y=0, symbol='@', name='Player', ship=None):
         self.x = x
@@ -14,11 +33,4 @@ class PilotPlayer(Pilot):
     pass
 
 class Npc(Pilot):
-    pass
-
-class Commander(object):
-    def __init__(self, faction):
-        self.faction = faction
-
-class Player(Commander):
     pass

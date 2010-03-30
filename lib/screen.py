@@ -3,6 +3,8 @@ class Screen:
         self.height = height
         self.width = width
         self.view = None
+        self.letters = 'abcdefghijklmnopqrstuvwxyz'
+        self.numbers = '1234567'
         self.clear()
 
     def clear(self):
@@ -18,13 +20,11 @@ class Screen:
             self.view[line] = '|' + self.view[line][1:-1] + '|'
 
     def ruler(self):
-        letters = 'abcdefghijklmnopqrstuvwxyz'
-        for index in range(len(letters)):
-            self.view[0] = self.view[0][:2+3*index] + letters[index] + \
+        for index in range(len(self.letters)):
+            self.view[0] = self.view[0][:2+3*index] + self.letters[index] + \
                             self.view[0][3+3*index:]
-        numbers = '1234567'
-        for index in range(len(numbers)):
-            self.view[2+3*index] = numbers[index] + self.view[2+3*index][1:]
+        for index in range(len(self.numbers)):
+            self.view[2+3*index] = self.numbers[index] + self.view[2+3*index][1:]
 
     def grid(self):
         for row in xrange(7):
@@ -33,6 +33,9 @@ class Screen:
             for row in xrange(1, self.height-1):
                 self.view[row] = self.view[row][:2+3*column] + '.' + \
                             self.view[row][3+3*column:]
+
+    def grid_add(self, position, symbol):
+        self.addstr(2+3*position[0], 2+3*position[1], symbol)
 
     def prompt(self):
         self.view[-1] = '>>>'

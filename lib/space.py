@@ -3,6 +3,54 @@ import ship
 import circle
 import random
 
+class Galaxy:
+    def __init__(self, user, maxx=7, maxy=26, systems_count=5):
+        self.player = user
+        self.maxx = maxx
+        self.maxy = maxy
+        self.system_names = ['Milky Way',
+                            'Andromeda',
+                            'Onyx',
+                            'Ferven',
+                            'Lost',
+                            'Calden',
+                            'Numen']
+        self.systems = []
+        for counter in xrange(systems_count):
+            self.systems.append(System(self.get_system_name(),
+                            self.generate_position()))
+
+    def propagate(self, dt):
+        pass
+
+    def get_system_name(self):
+        index = random.randint(0, len(self.system_names)-1)
+        return self.system_names.pop(index)
+
+    def generate_position(self):
+        position = None
+        while not self.is_valid_position(position):
+            x = random.randint(0, self.maxx-1)
+            y = random.randint(0, self.maxy-1)
+            position = [x, y]
+        return position
+
+    def is_valid_position(self, position):
+        if position is None:
+            return False
+        for system in self.systems:
+            if position[0] == system.position[0] and \
+                position[1] == system.position[1]:
+                return False
+        return True
+
+
+class System:
+    def __init__(self, name, position):
+        self.name = name
+        self.position = position
+
+
 class Universe:
     def __init__(self, user, height=23, width=49, galaxy_count=10):
         #self.generate_universe()
@@ -120,34 +168,6 @@ class Universe:
             if body.x == self.player.x and body.y == self.player.y:
                 collisions.append(body)
         return collisions
-
-
-class Galaxy:
-    def __init__(self, position):
-        self.bodies = []
-        self.position = position
-        self.range = 50
-        for count in xrange(random.randint(10, 20)):
-            x, y = self.generate_position()
-            self.bodies.append(Planet(x, y))
-        #for count in xrange(random.randint(5, 10)):
-        #    x, y = self.generate_position()
-        #    self.bodies.append(player.Npc(x, y, '!', 'enemy', ship.Pod()))
-
-    def generate_position(self):
-        x, y = None, None
-        while not self.is_valid_position(x, y):
-            x = random.randint(-self.range/2, self.range/2)
-            y = random.randint(-self.range/2, self.range/2)
-        return x, y
-
-    def is_valid_position(self, x, y):
-        if x is None or y is None:
-            return False
-        for body in self.bodies:
-            if x == body.x and y == body.y:
-                return False
-        return True
 
 class Planet:
     def __init__(self, x, y, symbol='o', name='planet'):
