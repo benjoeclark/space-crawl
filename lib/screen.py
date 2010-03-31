@@ -3,7 +3,7 @@ class Screen:
         self.height = height
         self.width = width
         self.view = None
-        self.letters = 'abcdefghijklmnopqrstuvwxyz'
+        self.letters = 'abcdefghijklmno'
         self.numbers = '1234567'
         self.clear()
 
@@ -21,21 +21,26 @@ class Screen:
 
     def ruler(self):
         for index in range(len(self.letters)):
-            self.view[0] = self.view[0][:2+3*index] + self.letters[index] + \
-                            self.view[0][3+3*index:]
+            self.view[0] = self.view[0][:3+5*index] + self.letters[index] + \
+                            self.view[0][4+5*index:]
         for index in range(len(self.numbers)):
             self.view[2+3*index] = self.numbers[index] + self.view[2+3*index][1:]
 
     def grid(self):
-        for row in xrange(7):
+        for row in xrange(len(self.numbers)):
             self.view[2+3*row] = self.view[2+3*row][0] + '.'*(self.width-1)
-        for column in xrange(26):
+        for column in xrange(len(self.letters)):
             for row in xrange(1, self.height-1):
-                self.view[row] = self.view[row][:2+3*column] + '.' + \
-                            self.view[row][3+3*column:]
+                self.view[row] = self.view[row][:3+5*column] + '.' + \
+                            self.view[row][4+5*column:]
 
     def grid_add(self, position, symbol):
-        self.addstr(2+3*position[0], 2+3*position[1], symbol)
+        self.addstr(2+3*position[0], 3+5*position[1], symbol)
+
+    def plot_from_center(self, position, symbol):
+        x = position[0] + self.height/2
+        y = position[1] + self.width/2
+        self.addstr(x, y, symbol)
 
     def prompt(self):
         self.view[-1] = '>>>'

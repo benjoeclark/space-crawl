@@ -2,9 +2,10 @@ import player
 import ship
 import circle
 import random
+import math
 
 class Galaxy:
-    def __init__(self, user, maxx=7, maxy=26, systems_count=5):
+    def __init__(self, user, maxx=7, maxy=26, systems_count=25):
         self.player = user
         self.maxx = maxx
         self.maxy = maxy
@@ -14,14 +15,35 @@ class Galaxy:
                             'Ferven',
                             'Lost',
                             'Calden',
-                            'Numen']
+                            'Numen',
+                            'Anden',
+                            'Eden',
+                            'Tlord',
+                            'Quard',
+                            'Pnid',
+                            'Fra',
+                            'Vim',
+                            'Xranut',
+                            'Tindar',
+                            'Bith',
+                            'Ion',
+                            'Wanrd',
+                            'Mined',
+                            'Descrid',
+                            'Zinf',
+                            'Pluntis',
+                            'Sasc',
+                            'Eon']
         self.systems = []
         for counter in xrange(systems_count):
             self.systems.append(System(self.get_system_name(),
                             self.generate_position()))
+        self.player.starting_base(self.systems[0])
 
     def propagate(self, dt):
-        pass
+        self.player.propagate(dt)
+        for system in self.systems:
+            system.propagate(dt)
 
     def get_system_name(self):
         index = random.randint(0, len(self.system_names)-1)
@@ -49,134 +71,55 @@ class System:
     def __init__(self, name, position):
         self.name = name
         self.position = position
+        self.radius = random.randint(5, 8)
+        self.astrals = []
+        self.astrals.append(Star(self.generate_position(2)))
+        for planet_count in xrange(random.randint(5, 9)):
+            self.astrals.append(Planet(self.generate_position()))
 
+    def propagate(self, dt):
+        for astral in self.astrals:
+            astral.propagate(dt)
 
-class Universe:
-    def __init__(self, user, height=23, width=49, galaxy_count=10):
-        #self.generate_universe()
-        self.player = user
-        # Generate the galaxies in the universe
-        self.height, self.width = height, width
-        self.galaxies = []
-        for count in xrange(galaxy_count):
-            self.galaxies.append(Galaxy(self.get_position()))
-
-    def get_position(self):
+    def generate_position(self, radius=None):
         position = None
         while not self.is_valid_position(position):
-            position = self.get_random_position()
+            angle = random.randint(0, 359)
+            radial = random.randint(2,
+                self.radius if radius is None else radius)
+            position = [int(radial*math.sin(angle*math.pi/180.)),
+                        int(radial*math.cos(angle*math.pi/180.))]
         return position
-
-    def get_random_position(self):
-        return [random.randint(0, self.height), random.randint(0, self.width)]
 
     def is_valid_position(self, position):
         if position is None:
             return False
-        for galaxy in self.galaxies:
-            if position[0] == galaxy.position[0] and position[1] == galaxy.position[1]:
+        for astral in self.astrals:
+            if position[0] == astral.position[0] and \
+                position[1] == astral.position[1]:
                 return False
         return True
 
-    def generate_universe(self, height=23, width=79):
-        self.height, self.width = height, width
-        self.positions = []
-        for x in range(1, self.height):
-            for y in range(self.width):
-                self.positions.append([x, y])
-        self.galaxy_positions = []
-        self.galaxy_positions.append(self.pull_position([(self.height-1)/2-1,
-                                                self.width/2]))
-        self.galaxy_positions.append(self.pull_position([(self.height-1)/2+2,
-                                                self.width/2]))
-        self.paths = []
-        self.paths.append(self.pull_position([(self.height-1)/2,
-                                                self.width/2]))
-        self.paths.append(self.pull_position([(self.height-1)/2+1,
-                                                self.width/2]))
-        for galaxy_count in range(20):
-            base_galaxy = random.choice(self.galaxy_positions)
-            position = self.get_possible_position(base_galaxy)
-            if position is not None:
-                self.galaxy_positions.append(self.pull_position(position))
-                self.get_paths(base_galaxy, self.galaxy_positions[-1])
-        self.galaxies = []
-        for index in range(len(self.galaxy_positions)):
-            self.galaxies.append(Galaxy(self.galaxy_positions[index], self.get_danger(index)))
 
-    def get_danger(self, index):
-        return int(10./len(self.galaxy_positions) * index)
-
-    def get_paths(self, base, remote):
-        for x in range(base[0]+1, remote[0]):
-            if [x, base[1]] in self.positions:
-                self.paths.append(self.pull_position([x, base[1]]))
-        for x in range(remote[0]+1, base[0]):
-            if [x, base[1]] in self.positions:
-                self.paths.append(self.pull_position([x, base[1]]))
-        for y in range(base[1]+1, remote[1]):
-            if [base[0], y] in self.positions:
-                self.paths.append(self.pull_position([base[0], y]))
-        for y in range(remote[1]+1, base[1]):
-            if [base[0], y] in self.positions:
-                self.paths.append(self.pull_position([base[0], y]))
-
-    def get_possible_position(self, base):
-        possible = []
-        up = ([base[0]-1, base[1]] not in self.paths) and \
-            ([base[0]-1, base[1]] not in self.galaxy_positions)
-        for x in range(base[0]-2, 0, -1):
-            if up:
-                if [x, base[1]] in self.positions:
-                    possible.append([x, base[1]])
-                else:
-                    up = False
-        down = ([base[0]+1, base[1]] not in self.paths) and \
-            ([base[0]+1, base[1]] not in self.galaxy_positions)
-        for x in range(base[0]+2, 24):
-            if down:
-                if [x, base[1]] in self.positions:
-                    possible.append([x, base[1]])
-                else:
-                    down = False
-        left = ([base[0], base[1]-1] not in self.paths) and \
-            ([base[0], base[1]-1] not in self.galaxy_positions)
-        for y in range(base[1]-2, -1, -1):
-            if left:
-                if [base[0], y] in self.positions:
-                    possible.append([base[0], y])
-                else:
-                    left = False
-        right = ([base[0], base[1]+1] not in self.paths) and \
-            ([base[0], base[1]+1] not in self.galaxy_positions)
-        for y in range(base[1]+2, 80):
-            if right:
-                if [base[0], y] in self.positions:
-                    possible.append([base[0], y])
-                else:
-                    right = False
-        if len(possible) == 0:
-            return None
-        return random.choice(possible)
-
-    def pull_position(self, position):
-        return self.positions.pop(self.positions.index(position))
-
-    def detect_collision(self):
-        collisions = []
-        for body in self.galaxy.bodies:
-            if body.x == self.player.x and body.y == self.player.y:
-                collisions.append(body)
-        return collisions
-
-class Planet:
-    def __init__(self, x, y, symbol='o', name='planet'):
-        self.x = x
-        self.y = y
-        self.symbol = symbol
+class Astral(object):
+    def __init__(self, position, name=None):
+        self.position = position
         self.name = name
-        self.radius = random.randint(3, 8)
-        self.generate_image()
+        self.symbol = '*'
+        self.initialize()
 
-    def generate_image(self):
-        self.image = circle.Circle(self.radius, '*').get_circle_strings()
+    def initialize(self):
+        pass
+
+    def propagate(self, dt):
+        pass
+
+
+class Star(Astral):
+    pass
+
+
+class Planet(Astral):
+    def initialize(self):
+        self.symbol = 'o'
+        self.resources = []
