@@ -21,10 +21,11 @@ Ideas
     * currently selected galaxy with stats (discovered resources, units)
 * galaxy - can pan around, select planets to see stats, if has been explored
 * missions
-    * explore
-    * attack
-    * conquer
-    * hold/defend
+    * explore - system, random
+    * attack - faction, enemy
+    * find - resource, faction
+    * hold/defend - location, fleet
+    * go - system
 * factions
     * turtling - cheaper defensive structures
     * explorer - drones
